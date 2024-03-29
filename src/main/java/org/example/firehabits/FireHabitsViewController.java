@@ -1,46 +1,167 @@
 package org.example.firehabits;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
+import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
+import java.util.ResourceBundle;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Text;
+import org.example.firehabits.utils.ButtonScaleAnimation;
 
-public class FireHabitsViewController {
-//    @FXML
-//    private Label welcomeText;
-//
-//    protected void onHelloButtonClick() {
-//        welcomeText.setText("Welcome to JavaFX Application!");
-//    }
-//
-//    protected void onFireClick() {
-//        System.out.println("Fire Click!");
-//    }
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
+public class FireHabitsViewController implements Initializable {
+    private FireHabitsApplication app;
 
-    public void switchToAddFireView(ActionEvent event) throws IOException {
-        URL addFireViewUrl = Objects.requireNonNull(FireHabitsViewController.class.getResource("add-fire-view.fxml"));
-        Parent root = FXMLLoader.load(addFireViewUrl);
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+    private ObservableList<Circle> circles;
+    private IntegerProperty activeCircleIndex;
+
+    @FXML
+    private AnchorPane rootPane;
+
+    @FXML
+    private TextField habitTitle;
+
+    @FXML
+    private Text streakText;
+
+    @FXML
+    private Button actionButton;
+
+    @FXML
+    private Button prevHabitButton;
+
+    @FXML
+    private Button nextHabitButton;
+
+    @FXML
+    private HBox circleBox;
+
+    @FXML private HBox weekBox;
+
+    public void updateWeekCircles(boolean[] sequence) {
+        if (weekBox == null) return;
+        ObservableList<Node> children = weekBox.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            StackPane stackPane = (StackPane) children.get(i);
+            Circle circle = (Circle) stackPane.getChildren().get(0);
+            Text text = (Text) stackPane.getChildren().get(1);
+            updateWeekCircle(circle, text, sequence[i]);
+        }
     }
 
-    public void switchToActiveFireView(ActionEvent event) throws IOException {
-        URL activeFireViewUrl = Objects.requireNonNull(FireHabitsViewController.class.getResource("active-fire-view.fxml"));
-        Parent root = FXMLLoader.load(activeFireViewUrl);
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+    @FXML
+    private void onNewHabitClick(ActionEvent event) throws IOException {
+        this.app.newHabit();
+    }
+
+    @FXML
+    private void onSwitchRecord(ActionEvent event) throws IOException {
+        this.app.switchHabitRecord();
+    }
+
+    @FXML
+    private void onLeftClick(ActionEvent event) throws  IOException {
+        this.app.switchPrevHabit();
+    }
+
+    @FXML
+    private void onRightClick(ActionEvent event) throws  IOException {
+        this.app.switchNextHabit();
+    }
+
+    private void redrawCircles() {
+        circleBox.getChildren().clear();
+        circleBox.getChildren().addAll(circles);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (this.habitTitle != null) {
+            rootPane.setOnMouseClicked(event -> {
+                    rootPane.requestFocus();
+                    this.app.updateHabitTitle(habitTitle.getText());
+            });
+        }
+
+
+
+        ButtonScaleAnimation.applyScaleAnimation(actionButton);
+        ButtonScaleAnimation.applyScaleAnimation(prevHabitButton);
+        ButtonScaleAnimation.applyScaleAnimation(nextHabitButton);
+        circles = FXCollections.observableArrayList();
+        activeCircleIndex = new SimpleIntegerProperty(-1);
+
+        redrawCircles();
+    }
+
+    private static final String ACTIVE_FILL = "WHITE";
+    private static final String ACTIVE_TEXT_FILL = "BLACK";
+    private static final String INACTIVE_FILL = "#0000ff00";
+    private static final String INACTIVE_TEXT_FILL = "WHITE";
+
+    private void updateWeekCircle(Circle circle, Text text, boolean isActive) {
+        if (isActive) {
+            circle.setFill(Color.web(ACTIVE_FILL));
+            text.setFill(Color.web(ACTIVE_TEXT_FILL));
+        } else {
+            circle.setFill(Color.web(INACTIVE_FILL));
+            text.setFill(Color.web(INACTIVE_TEXT_FILL));
+        }
+    }
+
+    public void updateStreakText(int streakDays) {
+        if (streakDays <= 1) {
+            streakText.setText("");
+            return;
+        }
+        streakText.setText("Your current streak is " + streakDays + " days");
+    }
+
+    public void updateCircles(int activeIndex) {
+        circles.clear();
+        for (int i = 0; i < app.getHabits().size(); i++) {
+            final int index = i;
+            Circle circle = new Circle(6, Color.WHITE);
+            circle.setStroke(Color.BLACK);
+            circle.setStrokeType(StrokeType.INSIDE);
+            circle.opacityProperty().bind(Bindings.createDoubleBinding(() ->
+                    activeIndex == index ? 1.0 : 0.4, activeCircleIndex));
+            circles.add(circle);
+        }
+        activeCircleIndex.set(activeIndex);
+        redrawCircles();
+        ImageView plusIcon = new ImageView(new Image(getClass().getResource("images/plus-icon.png").toExternalForm()));
+        plusIcon.setFitWidth(12);
+        plusIcon.setFitHeight(12);
+        circleBox.getChildren().add(plusIcon);
+        if (activeIndex == -1) {
+            plusIcon.setOpacity(1);
+        } else {
+            plusIcon.setOpacity(0.4);
+        }
+    }
+
+    public void setHabitTitle(String title) {
+        this.habitTitle.setText(title);
+    }
+
+    public void setApp(FireHabitsApplication app) {
+        this.app = app;
     }
 }

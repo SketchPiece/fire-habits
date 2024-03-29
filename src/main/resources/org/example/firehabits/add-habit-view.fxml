@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0"
+            prefWidth="319.0" style="-fx-background-color: #1C1920;" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.firehabits.FireHabitsViewController">
+    <Button fx:id="actionButton"  layoutX="82.0" layoutY="166.0" mnemonicParsing="false" onAction="#onNewHabitClick" prefHeight="158.0"
+            prefWidth="156.0" style="-fx-background-color: transparent;" textFill="WHITE">
+        <graphic>
+            <ImageView fitHeight="120.0" fitWidth="120.0">
+                <Image url="@images/plus-icon.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+    <Button fx:id="prevHabitButton" layoutY="233.0" mnemonicParsing="false" onAction="#onLeftClick" style="-fx-background-color: transparent;">
+        <graphic>
+            <ImageView fitHeight="40.0" fitWidth="40.0">
+                <Image url="@images/left.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+    <Button fx:id="nextHabitButton" layoutX="261.0" layoutY="233.0" mnemonicParsing="false" onAction="#onRightClick"
+            style="-fx-background-color: transparent;">
+        <graphic>
+            <ImageView fitHeight="40.0" fitWidth="40.0">
+                <Image url="@images/right.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+    <HBox fx:id="circleBox" alignment="CENTER" layoutX="58.0" layoutY="426.0" prefHeight="25.0" prefWidth="204.0" spacing="5.0">
+        <ImageView fitHeight="12.0" fitWidth="12.0">
+            <Image url="@images/plus-icon.png"/>
+        </ImageView>
+    </HBox>
+</AnchorPane>
