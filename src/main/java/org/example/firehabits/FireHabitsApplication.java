@@ -51,7 +51,8 @@ public class FireHabitsApplication extends Application {
         FireHabitsViewController viewController = loader.getController();
         newView.setUserData(viewController);
         viewController.setApp(this);
-        viewController.setHabitTitle(habit.getTitle());
+        viewController.setHabitTitle(habit.getTitle(), habit.getColor());
+        viewController.setActive(habit.isRecordedToday(), habit.getColor());
         viewController.updateCircles(index);
         viewController.updateWeekCircles(habit.getCurrentWeekSequence());
         viewController.updateStreakText(habit.getOverallStreak());
@@ -139,6 +140,7 @@ public class FireHabitsApplication extends Application {
         habit.switchRecord();
         viewController.updateWeekCircles(habit.getCurrentWeekSequence());
         viewController.updateStreakText(habit.getOverallStreak());
+        viewController.setActive(habit.isRecordedToday(), habit.getColor());
         saveHabits();
     }
 

@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -48,6 +49,9 @@ public class FireHabitsViewController implements Initializable {
 
     @FXML
     private Button nextHabitButton;
+
+    @FXML
+    private ImageView buttonImageView;
 
     @FXML
     private HBox circleBox;
@@ -90,6 +94,11 @@ public class FireHabitsViewController implements Initializable {
         circleBox.getChildren().addAll(circles);
     }
 
+    private Image fireBlueImage;
+    private Image fireRedImage;
+    private Image fireYellowImage;
+    private Image fireOffImage;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (this.habitTitle != null) {
@@ -106,6 +115,10 @@ public class FireHabitsViewController implements Initializable {
         ButtonScaleAnimation.applyScaleAnimation(nextHabitButton);
         circles = FXCollections.observableArrayList();
         activeCircleIndex = new SimpleIntegerProperty(-1);
+        fireOffImage = new Image(getClass().getResourceAsStream("images/fire-off.png"));
+        fireRedImage = new Image(getClass().getResourceAsStream("images/fire-red.png"));
+        fireYellowImage = new Image(getClass().getResourceAsStream("images/fire-yellow.png"));
+        fireBlueImage = new Image(getClass().getResourceAsStream("images/fire-blue.png"));
 
         redrawCircles();
     }
@@ -157,8 +170,34 @@ public class FireHabitsViewController implements Initializable {
         }
     }
 
-    public void setHabitTitle(String title) {
+    public void setHabitTitle(String title, String color) {
         this.habitTitle.setText(title);
+        if (Objects.equals(color, "blue")) {
+            habitTitle.setStyle("-fx-background-color: transparent; -fx-text-fill: #2E7DF9;");
+        } else if (Objects.equals(color, "red")) {
+            habitTitle.setStyle("-fx-background-color: transparent; -fx-text-fill: #F92E2E;");
+        } else if (Objects.equals(color, "yellow")) {
+            habitTitle.setStyle("-fx-background-color: transparent; -fx-text-fill: #F09B00;");
+        } else {
+            habitTitle.setStyle("-fx-background-color: transparent; -fx-text-fill: #F09B00;");
+        }
+    }
+
+    public void setActive(boolean active, String color) {
+            if (active) {
+                if (Objects.equals(color, "blue")) {
+                    buttonImageView.setImage(fireBlueImage);
+                } else if (Objects.equals(color, "red")) {
+                    buttonImageView.setImage(fireRedImage);
+                } else if (Objects.equals(color, "yellow")) {
+                    buttonImageView.setImage(fireYellowImage);
+                } else {
+                    buttonImageView.setImage(fireYellowImage);
+                }
+
+            } else {
+                buttonImageView.setImage(fireOffImage);
+            }
     }
 
     public void setApp(FireHabitsApplication app) {

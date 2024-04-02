@@ -20,9 +20,8 @@ public class HabitGenerator {
 
     private static final List<String> HABIT_COLORS = Arrays.asList(
             "blue",
-            "green",
             "red",
-            "orange"
+            "yellow"
     );
 
     private static final Random random = new Random();

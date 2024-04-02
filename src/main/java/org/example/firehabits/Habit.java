@@ -20,6 +20,7 @@ public class Habit implements Serializable {
     public String getTitle() {
         return this.title;
     }
+    public String getColor() { return this.color; }
 
     public void setTitle(String title) {
         this.title = title;
