@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class Habit implements Serializable {
     private String title;
@@ -26,6 +27,23 @@ public class Habit implements Serializable {
         this.title = title;
     }
 
+    public void generateRandomRecords(int count) {
+        Random random = new Random();
+        LocalDate today = LocalDate.now();
+
+        for (int i = 0; i < count; i++) {
+            int streakLength = random.nextInt(7) + 1; // Generate a random streak length between 1 and 7
+            LocalDate startDate = today.minusDays(streakLength - 1);
+
+            for (int j = 0; j < streakLength; j++) {
+                LocalDate recordDate = startDate.plusDays(j);
+                records.add(recordDate);
+            }
+
+            int gapLength = random.nextInt(3) + 1; // Generate a random gap length between 1 and 3
+            today = startDate.minusDays(gapLength);
+        }
+    }
     public void switchRecord() {
         LocalDate today = LocalDate.now();
         if (records.contains(today)) {

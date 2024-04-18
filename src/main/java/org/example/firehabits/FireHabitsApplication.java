@@ -15,6 +15,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class FireHabitsApplication extends Application {
     private static final String HABITS_FILE = "habits.ser";
@@ -38,6 +39,21 @@ public class FireHabitsApplication extends Application {
         stage.show();
 
         if (!this.habits.isEmpty()) setHabitView(0);
+
+//        for (int i = 0; i < 5; i++) {
+//            String habitName = HabitGenerator.generateRandomHabitName();
+//            String habitColor = HabitGenerator.generateRandomHabitColor();
+//            habits.add(new Habit(habitName, habitColor));
+//        }
+//
+//        // Generate random records for each habit
+//        Random random = new Random();
+//        for (Habit habit : habits) {
+//            int recordCount = random.nextInt(30) + 1; // Generate between 1 and 30 records
+//            habit.generateRandomRecords(recordCount);
+//        }
+//        loadHabits();
+//        saveHabits();
     }
 
     public void setHabitView(int index) throws IOException {
